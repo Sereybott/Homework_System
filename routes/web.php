@@ -6,6 +6,10 @@ use function Laravel\Prompts\alert;
 
 use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\authController;
+use App\Http\Controllers\StudentController;
+use App\Models\Homework;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +27,6 @@ Route::group(['middleware'=>'guest'],function(){
 
     Route::post('/', [authController::class, 'loginPost'])->name('login');
 
-    Route::get('/reset-password', function(){
-        return view('forgetpassword');
-    })->name('forget');
 });
 
 
@@ -36,17 +37,29 @@ Route::group(['middleware'=>'auth'],function(){
 
     Route::get('/home/completed',  [HomeworkController::class, 'showCompleted'])->name('completed');
 
-    Route::get('/setting', function(){
-        return view('setting');
-    })->name('setting');
+    Route::get('/home/setting', [authController::class, 'update'])->name('setting');
 
-    Route::get('/ranking', function(){
-        $student = [
-            ['id'=>"i11482",'name'=>"ボット",'score'=>100],
-            ['id'=>'i11483','name'=>'他の人','score'=>80],
-        ];
-        return view('ranking',['students'=>$student]);
-    });
+    Route::post('/home/setting', [authController::class, 'updatePost'])->name('setting');
+
+    Route::get('/home/addStudent', [authController::class,'addStudent'])->name('addstudent');
+
+    Route::post('/home/addStudent', [authController::class, 'addStudentPost'])->name('addstudent');
+
+    Route::get('/home/addHomework', [HomeworkController::class,'addHomework'])->name('addhomework');
+
+    Route::post('/home/addHomework', [HomeworkController::class,'addHomeworkPost'])->name('addhomework');
 
     Route::delete('/logout', [authController::class,'logout'])->name('logout');
+
+    Route::post('/home/clear', [HomeworkController::class, 'clear'])->name('clear');
+
+    Route::delete('/home/restore', [HomeworkController::class, 'restore'])->name('restore');
+
+    Route::delete('/home/delete', [HomeworkController::class, 'delete'])->name('delete');
+
+    Route::get('/home/student',[StudentController::class, 'showStudent'])->name('student');
+
+    Route::post('/home/student', [StudentController::class, 'edit'])->name('edit_student');
+
+    Route::delete('/home/student', [StudentController::class, 'delete'])->name('delete_student');
 });

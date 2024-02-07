@@ -24,8 +24,8 @@
                 @endif
             </ul>
             <ul class="d-flex navbar-nav">
-                <li class="dropdown nav-item">
-                    <button class="nav-link dropdown-toggle active  " id="dropdownMenuButton2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="dropdown nav-item active">
+                    <button class="nav-link dropdown-toggle" id="dropdownMenuButton2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <?php use App\Models\kurasu;?>
                         {{Auth::user()->name}}-{{kurasu::where('id',Auth::user()->class)->first()['name']}}
                     </button>
@@ -54,7 +54,7 @@
             <h2>課題システム</h2>
         </div>
         <div class="card-body py-4">
-            <h4 class="card-title text-center">設定</h4>
+            <h4 class="card-title text-center">学生の追加</h4>
             @if(Session::has('success'))
                 <div class="alert alert-success" role="alert">
                     {{Session::get('success')}}
@@ -65,45 +65,29 @@
                     {{Session::get('error')}}
                 </div>
             @endif
-            <form action="{{route('setting')}}" method="POST">
+            <form action="{{route('addstudent')}}" method="POST">
                 @csrf
                 <div class="form-floating mb-4 mt-4">
-                    @if(Auth::user()->is_admin)
-                    <input type="text" class="form-control" id="id" value="{{Auth::user()->stu_id}}" name="stu_id">
-                    @else
-                    <input type="text" class="form-control" id="id" value="{{Auth::user()->stu_id}}" name="stu_id" readonly>
-                    @endif
-                    <label for="stu_id">学籍番号</label>
+                    <input type="hidden" class="form-control" id="class" placeholder="Enter Password" value="{{Auth::user()->class}}" name="class" readonly>
+                    
                 </div>
                 <div class="form-floating mb-4 mt-4">
-                    @if(Auth::user()->is_admin)
-                    <input type="text" class="form-control" id="name" value="{{Auth::user()->name}}" name="name">
-                    @else
-                    <input type="text" class="form-control" id="name" value="{{Auth::user()->name}}" name="name" readonly>
-                    @endif
+                    <input type="text" class="form-control" id="id" placeholder="Enter ID" name="id">
+                    <label for="id">学籍番号</label>
+                </div>
+                <div class="form-floating mb-4 mt-4">
+                    <input type="text" class="form-control" placeholder="名前" id="name" name="name">
                     <label for="name">名前</label>
                 </div>
                 <div class="form-floating mb-4 mt-4">
-                    @if(Auth::user()->is_admin)
-                    <input type="text" class="form-control" id="email" value="{{Auth::user()->email}}" name="email">
-                    @else
-                    <input type="text" class="form-control" id="email" value="{{Auth::user()->email}}" name="email" readonly>
-                    @endif
+                    <input type="text" class="form-control" placeholder="メール" id="email" name="email">
                     <label for="email">メール</label>
                 </div>
                 <div class="form-floating mb-4 mt-4">
-                    <input type="password" class="form-control" id="old-password" placeholder="Enter Password" name="old_password">
-                    <label for="old_password">今のパスワード</label>
+                    <input type="text" class="form-control" id="new-password" placeholder="Enter Password" value="password" name="new_password" readonly>
+                    <label for="new_password">パスワード</label>
                 </div>
-                <div class="form-floating mb-4 mt-4">
-                    <input type="password" class="form-control" id="new-password" placeholder="Enter Password" name="new_password">
-                    <label for="new_password">新しいパスワード</label>
-                </div>
-                <div class="form-floating mb-4 mt-4">
-                    <input type="password" class="form-control" id="new-password-confirm" placeholder="Enter Password" name="new_password_confirm">
-                    <label for="new_password_confirm">新しいパスワードの確認</label>
-                </div>
-                <p class="text-center"><button type="submit" class="btn btn-primary px-4 py-2">更新</button></p>
+                <p class="text-center"><button type="submit" class="btn btn-primary px-4 py-2">追加</button></p>
                 <p class="text-center mb-0"><a href="{{route('home')}}" class="card-link text-secondary">ホームページに戻る</a></p>
             </form>
         </div>

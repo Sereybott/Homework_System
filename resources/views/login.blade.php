@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <a class="navbar-brand">
-                <img src="http://localhost:8000/nara-k_logo.jpg" alt="Avatar Logo" style="width:40px;" class=""> 
+                <img src="{{URL::asset('/nara-k_logo.jpg')}}" alt="Avatar Logo" style="width:40px;" class=""> 
             </a>
             <p class="navbar-text m-0">奈良高専</p>
         </div>

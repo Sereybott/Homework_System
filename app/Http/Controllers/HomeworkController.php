@@ -2,46 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Homework;
+use App\Models\Done;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HomeworkController extends Controller
 {
     public function index(){
-        $homework = [
-            ['id'=>1,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,21,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false], 
-            ['id'=>2,'subject'=>"数学",'description'=>"プリント",'deadline'=> date("Y-m-d",mktime(0,0,0,1,27,2024)),'done'=>21,'date-done'=>null, 'isDone'=>false],
-            ['id'=>3,'subject'=>"コンピューターアーキテクチャ",'description'=>"Webclassの演習課題",'deadline'=> date("Y-m-d",mktime(0,0,0,1,19,2024)),'done'=>42,'date-done'=>date("Y-m-d",mktime(0,0,0,1,20,2024)), 'isDone'=>true],
-            ['id'=>4,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>date("Y-m-d"), 'isDone'=>true],
-            ['id'=>5,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-            ['id'=>6,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-            ['id'=>7,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-        ];
-        return view('homeworks',['homeworks'=>$homework]);
+        $count = DB::table('users')->get()->count();
+        $h = Homework::where('class',Auth::user()->class)->orderBy('deadline')->get();
+        return view('homeworks',['homeworks'=>$h,'student_num'=>$count]);
     }
 
     public function showCompleted(){
-        $homework = [
-            ['id'=>1,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,21,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false], 
-            ['id'=>2,'subject'=>"数学",'description'=>"プリント",'deadline'=> date("Y-m-d",mktime(0,0,0,1,27,2024)),'done'=>21,'date-done'=>null, 'isDone'=>false],
-            ['id'=>3,'subject'=>"コンピューターアーキテクチャ",'description'=>"Webclassの演習課題",'deadline'=> date("Y-m-d",mktime(0,0,0,1,19,2024)),'done'=>42,'date-done'=>date("Y-m-d",mktime(0,0,0,1,20,2024)), 'isDone'=>true],
-            ['id'=>4,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>date("Y-m-d"), 'isDone'=>true],
-            ['id'=>5,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-            ['id'=>6,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-            ['id'=>7,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-        ];
-        return view('done',['homeworks'=>$homework]);
+        $count = DB::table('users')->get()->count();
+        $h = Homework::where('class',Auth::user()->class)->orderBy('deadline')->get();
+        return view('done',['homeworks'=>$h,'student_num'=>$count]);
     }
 
     public function showOverdue(){
-        $homework = [
-            ['id'=>1,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,21,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false], 
-            ['id'=>2,'subject'=>"数学",'description'=>"プリント",'deadline'=> date("Y-m-d",mktime(0,0,0,1,27,2024)),'done'=>21,'date-done'=>null, 'isDone'=>false],
-            ['id'=>3,'subject'=>"コンピューターアーキテクチャ",'description'=>"Webclassの演習課題",'deadline'=> date("Y-m-d",mktime(0,0,0,1,19,2024)),'done'=>42,'date-done'=>date("Y-m-d",mktime(0,0,0,1,20,2024)), 'isDone'=>true],
-            ['id'=>4,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>date("Y-m-d"), 'isDone'=>true],
-            ['id'=>5,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-            ['id'=>6,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-            ['id'=>7,'subject'=>"物理",'description'=>"レポート",'deadline'=> date("Y-m-d",mktime(0,0,0,1,29,2024)),'done'=>32,'date-done'=>null, 'isDone'=>false],
-        ];
-        return view('overdue',['homeworks'=>$homework]);
+        $count = DB::table('users')->get()->count();
+        $h = Homework::where('class',Auth::user()->class)->orderBy('deadline')->get();
+        return view('overdue',['homeworks'=>$h,'student_num'=>$count]);
+    }
+
+    public function addHomework(){
+        if(Auth::user()->is_admin){
+            return view('addHomework');
+        }
+        return redirect()->route('home');
+    }
+
+    public function addHomeworkPost(Request $request){
+        if(Auth::user()->is_admin){
+            try{
+                $homework = new Homework();
+                $homework->subject = $request->subject;
+                $homework->description = $request->description;
+                $homework->deadline = $request->deadline;
+                $homework->class = $request->class;
+                $homework->save();
+                return back()->with('success','課題の追加が完成した');
+            } catch(Exception $e){
+                return back()->with('error','もう一回入力してください');
+            }
+        }
+        return redirect()->route('home');
+    }
+
+    public function clear(Request $request){
+        $done = new Done();
+        $done->user_id = Auth::user()->id;
+        $done->homework_id = $request->homework_id;
+        $done->date_submit = (string)date("Y-m-d");
+        $done->save();
+
+        return back()->with('success','おめでとうございます!!');
+    }
+
+    public function restore(Request $request){
+        DB::table('dones')->where('homework_id',$request->homework_id)->where('user_id',Auth::user()->id)->delete();
+        
+        return back()->with('success','差し戻しが完成した');
+    }
+
+    public function delete(Request $request){
+        DB::table('homework')->where('id',$request->homework_id)->delete();
+
+        return back()->with('success','課題の消すが完成した');
     }
 }

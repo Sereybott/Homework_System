@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('subject');
             $table->string('description');
             $table->date('deadline');
-            $table->date('done-date');
-            $table->integer('done');
+            $table->integer('class');
         });
     }
 
