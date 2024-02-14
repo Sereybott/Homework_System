@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->bigInteger('homework_id')->unsigned();
             $table->date('date_submit');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('homework_id')->references('id')->on('homework')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('homework_id')->references('id')->on('homework')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

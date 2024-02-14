@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->date('deadline');
             $table->integer('class');
+            $table->foreign('class')->references('id')->on('class')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

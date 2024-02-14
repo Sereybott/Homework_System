@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('class');
             $table->boolean('is_admin');
+            $table->foreign('class')->references('id')->on('class')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
